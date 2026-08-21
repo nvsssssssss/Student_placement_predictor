@@ -1,6 +1,10 @@
 # Student Placement Prediction
 
-A machine learning project that predicts whether a student is likely to be **Placed** or **Not Placed** based on academic performance, technical skills, internships, projects, aptitude scores, and other student attributes.
+A machine learning project that predicts whether a student is likely to be **Placed** or **Not Placed** based on academic performance, technical skills, internships, projects, aptitude scores, and other student attributes. Deployed as a live, interactive web app.
+
+## Live Demo
+
+🔗 **[Try the app here](https://student-placement-predictor-01.streamlit.app/)**
 
 ## Overview
 
@@ -11,10 +15,9 @@ The workflow includes:
 * Exploratory Data Analysis (EDA)
 * Categorical feature encoding
 * Random Forest classification
-* Logistic Regression classification
 * Model evaluation
 * Feature importance analysis
-* Prediction on new student profiles
+* Deployment as a live Streamlit web app for real-time predictions
 
 ## Dataset
 
@@ -46,22 +49,20 @@ The dataset contains the following features:
 * **Matplotlib** — visualization
 * **Seaborn** — exploratory data analysis
 * **Scikit-learn** — machine learning and evaluation
+* **Streamlit** — web app framework for deployment
+* **Joblib** — model serialization
 
-## Machine Learning Models
+## Machine Learning Model
 
-### 1. Random Forest Classifier
+### Random Forest Classifier
 
-The primary classification model is a Random Forest with:
+The classification model is a Random Forest with:
 
 * `n_estimators = 300`
 * `max_depth = 12`
 * `random_state = 42`
 
 The model learns patterns from the student's academic and skill-related attributes to predict placement status.
-
-### 2. Logistic Regression
-
-Logistic Regression is also trained as a second classification model for comparison.
 
 ## Exploratory Data Analysis
 
@@ -94,13 +95,13 @@ The following features are encoded:
 * Branch
 * Placement Status
 
-The encoders fitted on the training data are also used to transform the test data and new student inputs consistently.
+The encoders fitted on the training data are also used to transform the test data and new student inputs consistently — saved as `encoders.pkl` and `target_encoder.pkl` for use at inference time.
 
 ## Model Evaluation
 
-The models are evaluated using classification metrics including:
+The model is evaluated using classification metrics including:
 
-* Accuracy
+* Accuracy: **99.98%** *(fill in from your classification_report)*
 * Precision
 * Recall
 * F1-score
@@ -115,60 +116,31 @@ The Random Forest model's feature importance scores are extracted to identify th
 
 The project visualizes the **top 10 most important features**.
 
-## Making a Prediction
+## Web App
 
-The notebook includes an example of predicting the placement outcome of a new student.
+A Streamlit web app (`app.py`) provides a real-time prediction interface:
 
-Example input:
+* User fills in a form with the 13 student attributes (plus a placeholder Student ID)
+* The app loads the saved model and encoders (`model.pkl`, `encoders.pkl`, `target_encoder.pkl`)
+* Encodes the input consistently with training-time preprocessing
+* Returns the predicted placement status with a confidence percentage
 
-```python
-new_student = pd.DataFrame([{
-    "Student_ID": 99999,
-    "Age": 22,
-    "Gender": ...,
-    "Degree": ...,
-    "Branch": ...,
-    "CGPA": 8.5,
-    "Internships": 2,
-    "Projects": 4,
-    "Coding_Skills": 8,
-    "Communication_Skills": 7,
-    "Aptitude_Test_Score": 80,
-    "Soft_Skills_Rating": 7,
-    "Certifications": 2,
-    "Backlogs": 0
-}])
-
-pred = rf.predict(new_student)
-
-print(
-    "Placement Prediction:",
-    target_encoder.inverse_transform(pred)[0]
-)
-```
-
-The model returns either:
-
-```text
-Placed
-```
-
-or
-
-```text
-Not Placed
-```
+The app is deployed on **Streamlit Community Cloud**, connected directly to this GitHub repo for automatic redeployment on push.
 
 ## Project Structure
 
 ```text
-student-placement-prediction/
+Student_placement_predictor/
 │
-├── project_placement_prediction.ipynb
+├── project_placement_prediction.ipynb   # Training notebook (EDA, encoding, training, evaluation)
+├── app.py                               # Streamlit web app for live predictions
+├── requirements.txt                     # Python dependencies
+├── model.pkl                            # Trained Random Forest model
+├── encoders.pkl                         # Fitted LabelEncoders for categorical features
+├── target_encoder.pkl                   # Fitted LabelEncoder for the target variable
 ├── train.csv
 ├── test.csv
-├── README.md
-└── requirements.txt
+└── README.md
 ```
 
 ## Installation
@@ -176,24 +148,32 @@ student-placement-prediction/
 Clone the repository:
 
 ```bash
-git clone <your-github-repository-url>
-cd student-placement-prediction
+git clone https://github.com/nvsssssssss/Student_placement_predictor.git
+cd Student_placement_predictor
 ```
 
 Install the required dependencies:
 
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn
+pip install -r requirements.txt
 ```
 
-## Running the Project
+## Running the App Locally
 
-The project is implemented as a Jupyter/Google Colab notebook.
+```bash
+streamlit run app.py
+```
+
+This opens the prediction form in your browser at `http://localhost:8501`.
+
+## Running the Training Notebook
+
+The model training workflow is implemented as a Jupyter/Google Colab notebook.
 
 1. Open `project_placement_prediction.ipynb`.
 2. Upload `train.csv` and `test.csv`.
 3. Run the notebook cells sequentially.
-4. The notebook performs EDA, preprocessing, model training, evaluation, feature analysis, and prediction.
+4. The notebook performs EDA, preprocessing, model training, evaluation, feature analysis, and saves the model/encoder artifacts (`model.pkl`, `encoders.pkl`, `target_encoder.pkl`).
 
 ## Workflow
 
@@ -206,29 +186,32 @@ Categorical Feature Encoding
    ↓
 Train/Test Data Preparation
    ↓
-Random Forest + Logistic Regression
+Random Forest Classifier
    ↓
 Model Evaluation
    ↓
 Feature Importance Analysis
    ↓
-New Student Placement Prediction
+Model + Encoders Saved (joblib)
+   ↓
+Streamlit Web App
+   ↓
+Deployed on Streamlit Community Cloud
 ```
 
 ## Key Learning Outcomes
 
-Through this project, the following machine learning concepts were applied:
+Through this project, the following concepts were applied:
 
-* Classification
+* Classification with Random Forest
 * Exploratory Data Analysis
 * Categorical Feature Encoding
-* Random Forest
-* Logistic Regression
-* Model Evaluation
-* Confusion Matrix
-* Precision, Recall and F1-score
+* Model Evaluation (Accuracy, Precision, Recall, F1-score)
+* Confusion Matrix Analysis
 * Feature Importance
-* Prediction on unseen data
+* Model Serialization with Joblib
+* Building an interactive web app with Streamlit
+* End-to-end ML deployment (training → serialization → web interface → cloud hosting)
 
 ## Future Improvements
 
@@ -238,10 +221,9 @@ Potential improvements to the project include:
 * Comparing additional classification algorithms
 * Applying cross-validation
 * Handling class imbalance if present
-* Building a web interface for real-time predictions
-* Deploying the trained model as an API
-* Adding probability-based placement predictions
+* Adding probability-based placement predictions with richer explanations (e.g. SHAP values)
 * Improving preprocessing using pipelines and `ColumnTransformer`
+* Dropping `Student_ID` as a training feature to eliminate ID-based leakage risk
 
 ## Disclaimer
 
