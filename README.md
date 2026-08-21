@@ -101,7 +101,7 @@ The encoders fitted on the training data are also used to transform the test dat
 
 The model is evaluated using classification metrics including:
 
-* Accuracy: **99.98%** *(fill in from your classification_report)*
+* Accuracy: **99.98%** 
 * Precision
 * Recall
 * F1-score
