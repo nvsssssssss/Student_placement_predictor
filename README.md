@@ -14,7 +14,7 @@ The workflow includes:
 
 * Exploratory Data Analysis (EDA)
 * Categorical feature encoding
-* Random Forest classification
+* Model training and comparison — **Logistic Regression** and **Random Forest**
 * Model evaluation
 * Feature importance analysis
 * Deployment as a live Streamlit web app for real-time predictions
@@ -52,17 +52,21 @@ The dataset contains the following features:
 * **Streamlit** — web app framework for deployment
 * **Joblib** — model serialization
 
-## Machine Learning Model
+## Machine Learning Models
+
+Two classification models were trained and compared:
+
+### Logistic Regression
+
+A linear baseline model used to benchmark performance before applying a more complex ensemble method.
 
 ### Random Forest Classifier
-
-The classification model is a Random Forest with:
 
 * `n_estimators = 300`
 * `max_depth = 12`
 * `random_state = 42`
 
-The model learns patterns from the student's academic and skill-related attributes to predict placement status.
+The final deployed model (`model.pkl`) uses the Random Forest classifier, which learns patterns from the student's academic and skill-related attributes to predict placement status.
 
 ## Exploratory Data Analysis
 
@@ -99,14 +103,32 @@ The encoders fitted on the training data are also used to transform the test dat
 
 ## Model Evaluation
 
-The model is evaluated using classification metrics including:
+Both models were evaluated on a held-out test set of 5,000 samples using classification metrics including Accuracy, Precision, Recall, F1-score, Classification Report, and Confusion Matrix.
 
-* Accuracy: **99.98%** 
-* Precision
-* Recall
-* F1-score
-* Classification Report
-* Confusion Matrix
+### Logistic Regression Performance
+
+| Metric    | Score  |
+| --------- | ------ |
+| Accuracy  | 0.8502 |
+| Precision | 0.7903 |
+| Recall    | 0.7986 |
+| F1 Score  | 0.7944 |
+
+**Classification Report**
+
+|              | precision | recall | f1-score | support |
+| ------------ | --------- | ------ | -------- | ------- |
+| 0            | 0.88      | 0.88   | 0.88     | 3188    |
+| 1            | 0.79      | 0.80   | 0.79     | 1812    |
+| **accuracy** |           |        | 0.85     | 5000    |
+| macro avg    | 0.84      | 0.84   | 0.84     | 5000    |
+| weighted avg | 0.85      | 0.85   | 0.85     | 5000    |
+
+### Random Forest Performance
+
+* Accuracy: **99.98%**
+
+> **Note:** The Random Forest's accuracy is suspiciously high — not due to data leakage (checked, none found), but because the dataset is synthetic and too easy for a model like Random Forest to predict almost perfectly.
 
 A confusion matrix is also visualized to analyze correct and incorrect predictions.
 
@@ -132,7 +154,7 @@ The app is deployed on **Streamlit Community Cloud**, connected directly to this
 ```text
 Student_placement_predictor/
 │
-├── project_placement_prediction.ipynb   # Training notebook (EDA, encoding, training, evaluation)
+├── project_placement_prediction.ipynb   # Training notebook (EDA, encoding, LR + RF training, evaluation)
 ├── app.py                               # Streamlit web app for live predictions
 ├── requirements.txt                     # Python dependencies
 ├── model.pkl                            # Trained Random Forest model
@@ -173,7 +195,7 @@ The model training workflow is implemented as a Jupyter/Google Colab notebook.
 1. Open `project_placement_prediction.ipynb`.
 2. Upload `train.csv` and `test.csv`.
 3. Run the notebook cells sequentially.
-4. The notebook performs EDA, preprocessing, model training, evaluation, feature analysis, and saves the model/encoder artifacts (`model.pkl`, `encoders.pkl`, `target_encoder.pkl`).
+4. The notebook performs EDA, preprocessing, trains and compares Logistic Regression and Random Forest, evaluates both, and saves the final model/encoder artifacts (`model.pkl`, `encoders.pkl`, `target_encoder.pkl`).
 
 ## Workflow
 
@@ -186,13 +208,13 @@ Categorical Feature Encoding
    ↓
 Train/Test Data Preparation
    ↓
-Random Forest Classifier
+Model Training (Logistic Regression, Random Forest)
    ↓
-Model Evaluation
+Model Evaluation & Comparison
    ↓
 Feature Importance Analysis
    ↓
-Model + Encoders Saved (joblib)
+Best Model + Encoders Saved (joblib)
    ↓
 Streamlit Web App
    ↓
@@ -203,7 +225,8 @@ Deployed on Streamlit Community Cloud
 
 Through this project, the following concepts were applied:
 
-* Classification with Random Forest
+* Classification with Logistic Regression and Random Forest
+* Comparing linear vs ensemble models
 * Exploratory Data Analysis
 * Categorical Feature Encoding
 * Model Evaluation (Accuracy, Precision, Recall, F1-score)
@@ -217,13 +240,14 @@ Through this project, the following concepts were applied:
 
 Potential improvements to the project include:
 
+* Dropping `Student_ID` as a training feature, since it carries no predictive signal
+* Testing on a real-world (non-synthetic) placement dataset to validate whether the near-perfect accuracy holds outside synthetic data
 * Hyperparameter tuning using GridSearchCV or RandomizedSearchCV
 * Comparing additional classification algorithms
 * Applying cross-validation
 * Handling class imbalance if present
 * Adding probability-based placement predictions with richer explanations (e.g. SHAP values)
 * Improving preprocessing using pipelines and `ColumnTransformer`
-* Dropping `Student_ID` as a training feature to eliminate ID-based leakage risk
 
 ## Disclaimer
 
